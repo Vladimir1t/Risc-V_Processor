@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include <cstdint>
 
 // class decoder - decode 
 // class simulator - execute (изменить текущее состояние)
@@ -17,7 +18,7 @@ namespace Risc_v {
 
 namespace Registors {
 
-const int32_t Default_ = 0xDEAD;
+const int32_t Default_ = 0x1;
 
 struct Registor {
     const std::string name;
@@ -64,16 +65,23 @@ std::vector<Registor> registors = {  // vector of registors
 };
   
 }
+namespace RAM {
+
+std::vector<char> Ram(200, 0); 
+
+}
+
 class Decoder {
 
 public:
 
 const int32_t Default_instr = 0;  // 00...0
 
-static const int32_t R_type_mask = 0x33; // 0110011
-static const int32_t I_type_mask = 0x13; // 0010011
-static const int32_t S_type_mask = 0x23; // 0100011
 static const int32_t B_type_mask = 0x63; // 1100011
+static const int32_t R_type_mask = 0x33; // 0110011
+static const int32_t S_type_mask = 0x23; // 0100011
+static const int32_t I_type_mask = 0x13; // 0010011
+static const int32_t L_type_mask = 0x3;  // 0000011
 
 struct Instr {
     const int32_t Mask;
@@ -117,26 +125,33 @@ public:
 const std::array<Instr, 10> instr_R_array = {
     Instr{0x40000033, &Risc_v::Decoder::sub},
     Instr{0x40005033, &Risc_v::Decoder::sra},
-    Instr{0x33,       &Risc_v::Decoder::add},
     Instr{0x7033,     &Risc_v::Decoder::and_},
     Instr{0x6033,     &Risc_v::Decoder::or_},
-    Instr{0x1033,     &Risc_v::Decoder::sll},
+    Instr{0x5033,     &Risc_v::Decoder::srl},
+    Instr{0x4033,     &Risc_v::Decoder::xor_},
     Instr{0x3033,     &Risc_v::Decoder::sltu},
     Instr{0x2033,     &Risc_v::Decoder::slt},
-    Instr{0x4033,     &Risc_v::Decoder::xor_},
-    Instr{0x5033,     &Risc_v::Decoder::srl}
+    Instr{0x1033,     &Risc_v::Decoder::sll},
+    Instr{0x33,       &Risc_v::Decoder::add}
 };
 
- const std::array<Instr, 8> instr_I_array = {
+const std::array<Instr, 8> instr_I_array = {
     Instr{0x7013, &Risc_v::Decoder::andi},
     Instr{0x6013, &Risc_v::Decoder::ori},
+    Instr{0x5013, &Risc_v::Decoder::srai},
     Instr{0x4013, &Risc_v::Decoder::xori},
+    Instr{0x3013, &Risc_v::Decoder::sltiu},
     Instr{0x2013, &Risc_v::Decoder::slti},
     Instr{0x1013, &Risc_v::Decoder::slli},
-    Instr{0x5013, &Risc_v::Decoder::srai},
-    Instr{0x3013, &Risc_v::Decoder::sltiu},
     Instr{0x13,   &Risc_v::Decoder::addi}
- };
+};
+const std::array<Instr, 5> instr_L_array = {
+    Instr{0x5003, &Risc_v::Decoder::lhu}, //
+    Instr{0x4003, &Risc_v::Decoder::lbu},
+    Instr{0x2003, &Risc_v::Decoder::lw},
+    Instr{0x1003, &Risc_v::Decoder::lh},
+    Instr{0x3,   &Risc_v::Decoder::lb},
+};
 
 void decode_R_type(int32_t instr_code) {
 
@@ -190,10 +205,41 @@ void decode_I_type(int32_t instr_code) {
     }
 
 }
-void decode_S_type(int32_t instr_code) const {
+void decode_S_type(int32_t instr_code) {
 
 }
+void decode_L_type(int32_t instr_code) {
+
+    std::cout << "L_type\n";
+
+    for (auto& instr: instr_L_array) {
+
+        if (instr.Mask == (instr_code & instr.Mask)) {
+            #ifndef NDEBUG
+            std::cout << "Instr code: " << instr.Mask << std::endl;
+            #endif
+            const int32_t Mask = 0x1F; // 111111
+
+            int32_t reg_res = (instr_code >> 7) & Mask;
+            std::cout << "reg_res = " << reg_res << std::endl;
+
+            int32_t reg_adr = (instr_code >> 15) & Mask;
+            std::cout << "reg_adr = " << reg_adr << std::endl;
+
+            int32_t im = instr_code >> 20; 
+            std::cout << "Im = " << im << std::endl;
+            (this->*instr.func)(instr_code, reg_res, reg_adr, im);
+            break;
+        }
+    }
+}
 void decode_B_type(int32_t instr_code) const {
+
+}
+void decode_U_type(int32_t instr_code) const {
+
+}
+void decode_J_type(int32_t instr_code) const {
 
 }
 
@@ -300,26 +346,63 @@ void slti(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value < im;     
     std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';   
 }
+
+
+void lb(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
+
+    Registors::registors.at(reg_res).value = static_cast<int32_t>(RAM::Ram.at(Registors::registors.at(reg_adr).value + im));     
+    std::cout << "[lb] result = " << Registors::registors.at(reg_res).value << '\n';   
+}
+void lh(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
+
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);
+    Registors::registors.at(reg_res).value = static_cast<int32_t>(*ptr);     
+    std::cout << "[lh] result = " << Registors::registors.at(reg_res).value << '\n';   
+}
+void lw(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
+
+    int32_t* ptr = reinterpret_cast<int32_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);
+    Registors::registors.at(reg_res).value = static_cast<int32_t>(*ptr);        
+    std::cout << "[lw] result = " << Registors::registors.at(reg_res).value << '\n';   
+}
+void lbu(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
+
+    std::cout << "lbu\n";
+    std::cout << RAM::Ram.size();
+    Registors::registors.at(reg_res).value = static_cast<size_t>(RAM::Ram.at(Registors::registors.at(reg_adr).value + im));     
+    std::cout << "[lbu] result = " << Registors::registors.at(reg_res).value << '\n';   
+}
+void lhu(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
+
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);
+    Registors::registors.at(reg_res).value = static_cast<size_t>(*ptr);     
+    std::cout << "[lhu] result = " << Registors::registors.at(reg_res).value << '\n';    
+}
+
 void decode_instr(int32_t instr_code) {
 
     const int32_t Mask = 0x7F;
    
     switch((instr_code & Mask))
     {
-        case R_type_mask:   
-            decode_R_type(instr_code);
-            break;
-        
-        case Decoder::I_type_mask:
-            decode_I_type(instr_code);
-            break;
-
         case Decoder::B_type_mask:
             decode_B_type(instr_code);
             break;
         
+        case Decoder::R_type_mask:   
+            decode_R_type(instr_code);
+            break;
+        
         case Decoder::S_type_mask:
             decode_S_type(instr_code);
+            break;
+
+        case Decoder::I_type_mask:
+            decode_I_type(instr_code);
+            break;
+
+        case Decoder::L_type_mask:
+            decode_L_type(instr_code);
             break;
     }
     Registors::registors.at(32).value += 1;
