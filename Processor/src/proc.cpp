@@ -6,6 +6,8 @@
 
 int main(int argc, const char* argv[]) {
 
+    Risc_v::Decoder dec;
+
     if (argc < 3)
         return 0;
     
@@ -24,7 +26,8 @@ int main(int argc, const char* argv[]) {
 
     while (bytecode.read(reinterpret_cast<char*>(&instr_code), sizeof(instr_code))) {
         std::cout << "instr_code = " << instr_code << std::endl;
-        
+
+        dec.decode_instr(instr_code);
     }
 
     bytecode.close();
