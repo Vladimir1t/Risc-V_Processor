@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <vector>
+#include <cstdint>
 
 #include "risc_asm.hpp"
-//#include "instr_regs.hpp"
 
 int main(int argc, const char* argv[]) {
 

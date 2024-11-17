@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #include "risc_proc.hpp"
 
@@ -27,6 +28,10 @@ int main(int argc, const char* argv[]) {
         std::cout << "instr_code = " << instr_code << std::endl;
 
         dec.decode_instr(instr_code);
+    }
+
+    for (int i = 0; i != Risc_v::Registors::registors.size(); ++i) {
+        std::cout << "reg[" << i << "] = " << Risc_v::Registors::registors.at(i).value << '\n';
     }
 
     bytecode.close();
