@@ -17,7 +17,7 @@ int main(int argc, const char* argv[]) {
     bytecode.open(argv[2], std::ios::binary);
 
     if (!(asm_file.is_open() && bytecode.is_open())) {
-        std::cerr << "file wasn't opened\n";
+        std::cerr << "File wasn't opened\n";
         return 0;
     }
 
@@ -27,12 +27,13 @@ int main(int argc, const char* argv[]) {
         std::cout << "command = " << str_com << std::endl;
         for (auto command : Instruction::commands) {
             if (command.name == str_com) {
-
-                std::cout << "find instr\n";
+                #ifndef NDEBUG
+                    std::cout << "Find instr\n";
+                #endif
                 command.func(asm_file, bytecode);
+                break;
             }
         }
-        
     }
     asm_file.close();
     bytecode.close();

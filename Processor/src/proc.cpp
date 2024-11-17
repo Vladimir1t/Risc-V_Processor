@@ -2,7 +2,6 @@
 #include <fstream>
 
 #include "risc_proc.hpp"
-//#include "instr_regs.hpp"
 
 int main(int argc, const char* argv[]) {
 
