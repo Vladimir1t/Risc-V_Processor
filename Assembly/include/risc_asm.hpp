@@ -8,7 +8,7 @@
 
 namespace Registors {
 
-const int Default_     = 0xDEAD;
+const int Default_ = 0xDEAD;
 
 struct Registor {
     const std::string name;
@@ -113,9 +113,7 @@ std::vector<Command> commands = {
     {"srai",  srai},
     {"sltiu", sltiu},
 
-    {"sb", }
-
-   
+    {"sb", } 
 };
 
 void R_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, const int com_code) {

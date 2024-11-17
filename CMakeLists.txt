@@ -40,7 +40,7 @@ target_compile_options(RISC_Asm_Simulator.x  PRIVATE "$<$<CONFIG:RELEASE>:${CMAK
 target_compile_options(RISC_Proc_Simulator.x PRIVATE "$<$<CONFIG:RELEASE>:${CMAKE_CXX_FLAGS_RELEASE}>" ${FLAGS_DEBUG_1} ${FLAGS_DEBUG_2})
 
 
-# -DCMAKE_BUILD_TYPE=Release -S . -B build
+# cmake -DCMAKE_BUILD_TYPE=Release -S . -B build
 # cmake --build build
 # cmake -DCMAKE_BUILD_TYPE=Release
 # ./build/intersection.x

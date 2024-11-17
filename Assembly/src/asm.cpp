@@ -34,6 +34,20 @@ int main(int argc, const char* argv[]) {
             }
         }
     }
+    int32_t code = 0x2062383; // lw x7, 32(x12)
+    bytecode.write(reinterpret_cast<const char*>(&code), sizeof(code));
+    code = 0x850283; // lb x5, 8(x10)
+    bytecode.write(reinterpret_cast<const char*>(&code), sizeof(code));
+    code = 0x46C403; // lbu x8, 4(x13)
+    bytecode.write(reinterpret_cast<const char*>(&code), sizeof(code));
+
+    code = 0x2208063;  // beq x1, x2, 16
+    bytecode.write(reinterpret_cast<const char*>(&code), sizeof(code));
+    code = 0xFE20CAE3; // blt x1, x2, -6
+    bytecode.write(reinterpret_cast<const char*>(&code), sizeof(code));
+    code = 0x241F263;  // bgeu x3, x4, 20
+    bytecode.write(reinterpret_cast<const char*>(&code), sizeof(code));
+
     asm_file.close();
     bytecode.close();
 
