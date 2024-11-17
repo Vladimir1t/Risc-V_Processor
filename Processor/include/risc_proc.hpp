@@ -32,8 +32,6 @@ struct Registor {
     char              code;
 };
 
-// либо сделать хеш таблицу
-
 std::vector<Registor> registors = {  // vector of registors
             {"x0",  0,        0x0},  // zero
             {"x1",  Default_, 0x1},  // return addres
@@ -95,38 +93,6 @@ struct Instr {
 };
 
 public:
-
-// void decode_R_type(int32_t) {}
-// void decode_I_type(int32_t) {}
-// void decode_S_type(int32_t) {}
-// void decode_B_type(int32_t) {}
-
-// void add (int32_t, int32_t, int32_t, int32_t);
-// void sub (int32_t, int32_t, int32_t, int32_t);
-// void and_(int32_t, int32_t, int32_t, int32_t);
-// void or_ (int32_t, int32_t, int32_t, int32_t);
-// void sll (int32_t, int32_t, int32_t, int32_t);
-// void sltu(int32_t, int32_t, int32_t, int32_t);
-// void xor_(int32_t, int32_t, int32_t, int32_t);
-// void sra (int32_t, int32_t, int32_t, int32_t);
-// void slt (int32_t, int32_t, int32_t, int32_t);
-// void srl (int32_t, int32_t, int32_t, int32_t);
-
-// void addi (int32_t);
-// void andi (int32_t);
-// void ori  (int32_t);
-// void slli (int32_t);
-// void xori (int32_t);
-// void srai (int32_t);
-// void slti (int32_t);
-// void sltiu(int32_t);
-
-// const std::array<Instr, 4> instr_array = {
-//     Instr{R_type_mask, decode_R_type},
-//     Instr{I_type_mask, decode_I_type},
-//     Instr{S_type_mask, decode_S_type},
-//     Instr{B_type_mask, decode_B_type}
-// };
 
 const std::array<Instr, 10> instr_R_array = {
     Instr{0x40005033, &Risc_v::Decoder::sra },
@@ -321,25 +287,25 @@ void decode_B_type(int32_t instr_code) {
             #ifndef NDEBUG
                 std::cout << "Instr code: " << instr.Mask << std::endl;
             #endif
-            const int32_t Mask = 0x1F; // 111111
+            const int32_t Mask = 0x1F;  // 111111
 
             int32_t reg_1 = (instr_code >> 15) & Mask;
 
             int32_t reg_2 = (instr_code >> 20) & Mask;
 
             int32_t im = 0;
-            im = (im | ((instr_code & 0x80) >> 7)) << 10;       //im[11]
-            im = (im | ((instr_code & 0x7E000000) >> 21));     // im[10-5]
-            im = (im | ((instr_code & 0xF00) >> 7));            // im[4-1]
+            im = (im | ((instr_code & 0x80) << 3));         // im[11]
+            im = (im | ((instr_code & 0x7E000000) >> 21));  // im[10-5]
+            im = (im | ((instr_code & 0xF00) >> 7));        // im[4-1]
 
-            if (((instr_code & 0x80000000) >> 31) == 1)         //im[12]
+            if (((instr_code & 0x80000000) >> 31) == 1)     //im[12]
                 im = im | 0xFFFFF800;    
             #ifndef NGEBUG       
                 std::cout << "  reg_1 = " << reg_1 << std::endl;
                 std::cout << "  reg_2 = " << reg_2 << std::endl;
-                std::cout << "  im[1] " << im << ' ' << (instr_code & 0x80) << '\n'; 
-                std::cout << "  im[2] " << im << ' ' << (instr_code & 0x7E000000) << '\n'; 
-                std::cout << "  im[3] " << im << ' ' << (instr_code & 0xF00) << '\n'; 
+                std::cout << "  im[1] " << im << ' ' << (instr_code & 0x80) << std::endl; 
+                std::cout << "  im[2] " << im << ' ' << (instr_code & 0x7E000000) << std::endl; 
+                std::cout << "  im[3] " << im << ' ' << (instr_code & 0xF00) << std::endl; 
                 std::cout << "  Im = " << im << std::endl;
             #endif 
             (this->*instr.func)(instr_code, reg_1, reg_2, im);
