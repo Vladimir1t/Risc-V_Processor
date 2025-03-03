@@ -6,20 +6,6 @@
 #include <cstdint>
 #include <cstdint>
 
-// class decoder - decode (ok)
-// class simulator - execute (изменить текущее состояние)
-// write back 
-//
-// std::vector<char> - для памяти (ok)
-// int32_t (ok)
-// advanced_pc (pc += 1) (ok)
-// ecall
-// ebreak
-// добавить S-format: запись в память
-// В-format: ветвления
-// U-format: 
-// 
-
 namespace Risc_v {
 
 namespace Registors {
@@ -224,9 +210,9 @@ void decode_I_type(int32_t instr_code) {
 }
 
 void decode_L_type(int32_t instr_code) {
-
-    std::cout << "L_type\n";
-
+    #ifndef NDEBUG
+        std::cout << "L_type\n";
+    #endif
     for (auto& instr: instr_L_array) {
 
         if (instr.Mask == (instr_code & instr.Mask)) {
@@ -251,9 +237,9 @@ void decode_L_type(int32_t instr_code) {
     }
 }
 void decode_S_type(int32_t instr_code) {
-
-    std::cout << "S_type\n";
-
+    #ifndef NDEBUG
+        std::cout << "S_type\n";
+    #endif
     for (auto& instr: instr_S_array) {
 
         if (instr.Mask == (instr_code & instr.Mask)) {
@@ -278,9 +264,9 @@ void decode_S_type(int32_t instr_code) {
     }
 }
 void decode_B_type(int32_t instr_code) {
-
-    std::cout << "B_type\n";
-
+    #ifndef NDEBUG
+        std::cout << "B_type\n";
+    #endif
     for (auto& instr: instr_B_array) {
 
         if (instr.Mask == (instr_code & instr.Mask)) {
@@ -322,158 +308,226 @@ void decode_J_type(int32_t instr_code) const {
 
 void add(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value + Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value + 
+        Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 
 void sub(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value - Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value -
+         Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void and_(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value & Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value & 
+        Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void or_(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value | Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value | 
+        Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void sll(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value << Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value <<
+        Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
-void sra(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {  // c сохр знака!
+void sra(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) { 
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value >> Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value >> 
+        Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 
 }
 void sltu(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) { 
 
     Registors::registors.at(reg_1).value = static_cast<unsigned int>(Registors::registors.at(reg_2).value) < 
                                            static_cast<unsigned int>(Registors::registors.at(reg_3).value);
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
-void srl(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) { // без сохр знака
+void srl(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) { 
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value >> Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value >> 
+        Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void xor_(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value ^ Registors::registors.at(reg_3).value;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value ^
+        Registors::registors.at(reg_3).value;
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void slt(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t reg_3) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value < Registors::registors.at(reg_3).value;     
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';   
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value < 
+        Registors::registors.at(reg_3).value;     
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n'; 
+    #endif  
 }
 
 
 void addi(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value + im;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void andi(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value & im;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void ori(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value | im;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void slli(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value << im;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
-void srai(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {  // c сохр знака!
+void srai(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value >> im;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void sltiu(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { 
 
     Registors::registors.at(reg_1).value = static_cast<unsigned int>(Registors::registors.at(reg_2).value) < 
                                            static_cast<unsigned int>(im);
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
-void srli(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // без сохр знака
+void srli(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value >> im;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void xori(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value ^ im;
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';
+    #endif
 }
 void slti(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
-    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value < im;     
-    std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';   
+    Registors::registors.at(reg_1).value = Registors::registors.at(reg_2).value < im; 
+    #ifndef NDEBUG
+        std::cout << "result = " << Registors::registors.at(reg_1).value << '\n';   
+    #endif    
 }
 
 
 void lb(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
 
-    Registors::registors.at(reg_res).value = static_cast<int32_t>(RAM::Ram.at(Registors::registors.at(reg_adr).value + im));  //?   
-    std::cout << "[lb] result = " << Registors::registors.at(reg_res).value << '\n';   
+    Registors::registors.at(reg_res).value = static_cast<int32_t>(RAM::Ram.at(
+            Registors::registors.at(reg_adr).value + im));
+    #ifndef NDEBUG
+        std::cout << "[lb] result = " << Registors::registors.at(reg_res).value << '\n';   
+    #endif 
 }
 void lh(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
 
-    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);
-    Registors::registors.at(reg_res).value = static_cast<int32_t>(*ptr);     
-    std::cout << "[lh] result = " << Registors::registors.at(reg_res).value << '\n';   
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + Registors::registors.at(
+        reg_adr).value + im);
+    Registors::registors.at(reg_res).value = static_cast<int32_t>(*ptr);  
+    #ifndef NDEBUG
+        std::cout << "[lh] result = " << Registors::registors.at(reg_res).value << '\n';   
+    #endif   
 }
 void lw(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
 
-    int32_t* ptr = reinterpret_cast<int32_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);
-    Registors::registors.at(reg_res).value = static_cast<int32_t>(*ptr);        
-    std::cout << "[lw] result = " << Registors::registors.at(reg_res).value << '\n';   
+    int32_t* ptr = reinterpret_cast<int32_t*>(RAM::Ram.data() + Registors::registors.at(
+            reg_adr).value + im);
+    Registors::registors.at(reg_res).value = static_cast<int32_t>(*ptr);  
+    #ifndef NDEBUG
+        std::cout << "[lw] result = " << Registors::registors.at(reg_res).value << '\n';   
+    #endif      
 }
 void lbu(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
 
-    Registors::registors.at(reg_res).value = static_cast<size_t>(RAM::Ram.at(Registors::registors.at(reg_adr).value + im));     
-    std::cout << "[lbu] result = " << Registors::registors.at(reg_res).value << '\n';   
+    Registors::registors.at(reg_res).value = static_cast<size_t>(RAM::Ram.at(
+        Registors::registors.at(reg_adr).value + im));    
+    #ifndef NDEBUG
+        std::cout << "[lbu] result = " << Registors::registors.at(reg_res).value << '\n';   
+    #endif 
 }
 void lhu(int32_t instr_code, int32_t reg_res, int32_t reg_adr, int32_t im) {
 
-    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);
-    Registors::registors.at(reg_res).value = static_cast<size_t>(*ptr);     
-    std::cout << "[lhu] result = " << Registors::registors.at(reg_res).value << '\n';    
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + 
+        Registors::registors.at(reg_adr).value + im);
+    Registors::registors.at(reg_res).value = static_cast<size_t>(*ptr);    
+    #ifndef NDEBUG
+        std::cout << "[lhu] result = " << Registors::registors.at(reg_res).value << '\n';    
+    #endif 
 }
-
 
 void sb(int32_t instr_code, int32_t reg_from, int32_t reg_adr, int32_t im) {
 
     (RAM::Ram.at(Registors::registors.at(reg_adr).value + im)) = static_cast<char>(reg_from);     
-    std::cout << "[sb] result = " << RAM::Ram.at(Registors::registors.at(reg_adr).value + im) << '\n';   
+    #ifndef NDEBUG
+        std::cout << "[sb] result = " << RAM::Ram.at(Registors::registors.at(reg_adr).value + im) << '\n';   
+    #endif
 }
 void sh(int32_t instr_code, int32_t reg_from, int32_t reg_adr, int32_t im) {
 
-    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);   
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(RAM::Ram.data() + 
+        Registors::registors.at(reg_adr).value + im);   
     *ptr = static_cast<uint16_t>(Registors::registors.at(reg_from).value);
-    std::cout << "[sh] result = " << *ptr << '\n';   
+    #ifndef NDEBUG
+        std::cout << "[sh] result = " << *ptr << '\n';   
+    #endif
 }
 void sw(int32_t instr_code, int32_t reg_from, int32_t reg_adr, int32_t im) {
 
     int32_t* ptr = reinterpret_cast<int32_t*>(RAM::Ram.data() + Registors::registors.at(reg_adr).value + im);
     //Registors::registors.at(reg_from).value = static_cast<int32_t>(*ptr);       
     *ptr = Registors::registors.at(reg_from).value;
-    std::cout << "[sw] result = " << *ptr << '\n';   
+    #ifndef NDEBUG
+        std::cout << "[sw] result = " << *ptr << '\n';   
+    #endif
 }
 
 
-void beq(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // надо передавать ссылку на поток
+void beq(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     if (reg_1 == reg_2) {
         // сместить каретку pc;
@@ -482,7 +536,7 @@ void beq(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // на
     else 
         std::cout << "don't jump\n";
 }
-void bne(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // надо передавать ссылку на поток
+void bne(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { 
 
     if (reg_1 != reg_2) {
         // сместить каретку pc;
@@ -491,7 +545,7 @@ void bne(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // на
     else 
         std::cout << "don't jump\n";
 }
-void blt(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // надо передавать ссылку на поток
+void blt(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) {
 
     if (reg_1 < reg_2) {
         // сместить каретку pc;
@@ -500,7 +554,7 @@ void blt(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // на
     else 
         std::cout << "don't jump\n";
 }
-void bge(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // надо передавать ссылку на поток
+void bge(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { 
 
     if (reg_1 >= reg_2) {
         // сместить каретку pc;
@@ -509,7 +563,7 @@ void bge(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // на
     else 
         std::cout << "don't jump\n";
 }
-void bltu(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // надо передавать ссылку на поток
+void bltu(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { 
 
     if (static_cast<uint32_t>(reg_1) < static_cast<uint32_t>(reg_2)) {
         // сместить каретку pc;
@@ -518,7 +572,7 @@ void bltu(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // н�
     else 
         std::cout << "don't jump\n";
 }
-void bgeu(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { // надо передавать ссылку на поток
+void bgeu(int32_t instr_code, int32_t reg_1, int32_t reg_2, int32_t im) { 
 
     if (static_cast<uint32_t>(reg_1) >= static_cast<uint32_t>(reg_2)) {
         // сместить каретку pc;

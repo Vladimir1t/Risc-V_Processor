@@ -4,8 +4,7 @@
 #include <iostream>
 #include <vector>
 
-// ISA
-
+/* ISA */
 namespace Registors {
 
 const int Default_ = 0xDEAD;
@@ -17,44 +16,42 @@ struct Registor {
 };
 
 std::vector<Registor> registors = {
-            {"x0",  0,        0x0},  // zero
-            {"x1",  Default_, 0x1},  // return addres
-            {"x2",  Default_, 0x2},  // stack pointer
-            {"x3",  Default_, 0x3},  // global pointer
-            {"x4",  Default_, 0x4},  // thread pointer
-            {"x5",  Default_, 0x5},  // temporary
-            {"x6",  Default_, 0x6},  // temporary
-            {"x7",  Default_, 0x7},  // temporary
-            {"x8",  Default_, 0x8},  //
-            {"x9",  Default_, 0x9},
-            {"x10", Default_, 0xA},
-            {"x11", Default_, 0xB},
-            {"x12", Default_, 0xC},
-            {"x13", Default_, 0xD},
-            {"x14", Default_, 0xE},
-            {"x15", Default_, 0xF},
-            {"x16", Default_, 0X10},
-            {"x17", Default_, 0x11},
-            {"x18", Default_, 0x12},
-            {"x19", Default_, 0x13},
-            {"x20", Default_, 0x14},
-            {"x21", Default_, 0x15},
-            {"x22", Default_, 0x16},
-            {"x23", Default_, 0x17},
-            {"x24", Default_, 0x18},
-            {"x25", Default_, 0x19},
-            {"x26", Default_, 0x1A},
-            {"x27", Default_, 0x1B},
-            {"x28", Default_, 0x1C},
-            {"x29", Default_, 0x1D},
-            {"x30", Default_, 0x1E},
-            {"x31", Default_, 0x1F},
-
-            {"XLEN",   Default_},
-            {"XLEN-1", Default_},
-            {"pc",     Default_},
-};
-  
+        {"x0",  0,        0x0},  // zero
+        {"x1",  Default_, 0x1},  // return addres
+        {"x2",  Default_, 0x2},  // stack pointer
+        {"x3",  Default_, 0x3},  // global pointer
+        {"x4",  Default_, 0x4},  // thread pointer
+        {"x5",  Default_, 0x5},  // temporary
+        {"x6",  Default_, 0x6},  // temporary
+        {"x7",  Default_, 0x7},  // temporary
+        {"x8",  Default_, 0x8},  //
+        {"x9",  Default_, 0x9},
+        {"x10", Default_, 0xA},
+        {"x11", Default_, 0xB},
+        {"x12", Default_, 0xC},
+        {"x13", Default_, 0xD},
+        {"x14", Default_, 0xE},
+        {"x15", Default_, 0xF},
+        {"x16", Default_, 0X10},
+        {"x17", Default_, 0x11},
+        {"x18", Default_, 0x12},
+        {"x19", Default_, 0x13},
+        {"x20", Default_, 0x14},
+        {"x21", Default_, 0x15},
+        {"x22", Default_, 0x16},
+        {"x23", Default_, 0x17},
+        {"x24", Default_, 0x18},
+        {"x25", Default_, 0x19},
+        {"x26", Default_, 0x1A},
+        {"x27", Default_, 0x1B},
+        {"x28", Default_, 0x1C},
+        {"x29", Default_, 0x1D},
+        {"x30", Default_, 0x1E},
+        {"x31", Default_, 0x1F},
+        {"XLEN",   Default_},
+        {"XLEN-1", Default_},
+        {"pc",     Default_},
+}; 
 }
 
 namespace Instruction {
@@ -65,7 +62,6 @@ struct Command {
     const std::string name;
     void (*func)(std::ifstream&, std::ofstream&);
 };
-    // массив структур (или хеш таблица), где хранятся названия комманд и ссылки на функции 
 
 void add  (std::ifstream&, std::ofstream&);
 void sub  (std::ifstream&, std::ofstream&);
@@ -88,8 +84,10 @@ void slti (std::ifstream&, std::ofstream&);
 void srai (std::ifstream&, std::ofstream&);
 void sltiu(std::ifstream&, std::ofstream&);
 
-void R_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, const int com_code);
-void I_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, const int com_code);
+void R_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, 
+    const int com_code);
+void I_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, 
+    const int com_code);
 
 std::vector<Command> commands = {
     {"add",  add},
@@ -116,7 +114,8 @@ std::vector<Command> commands = {
     {"sb", } 
 };
 
-void R_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, const int com_code) {
+void R_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, 
+    const int com_code) {
   
     int inst_code = Default_instr | com_code;
 
@@ -208,7 +207,8 @@ void srl(std::ifstream& asm_file, std::ofstream& bytecode) {
     R_type_instr(asm_file, bytecode, 0x5033);
 }
 
-void I_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, const int com_code) {
+void I_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, 
+    const int com_code) {
 
     int inst_code = Default_instr | com_code;
 
@@ -253,7 +253,8 @@ void I_type_instr(std::ifstream& asm_file, std::ofstream& bytecode, const int co
         std::cout << "inst code (3) " << inst_code << '\n';
     #endif
 
-    bytecode.write(reinterpret_cast<const char*>(&inst_code), sizeof(inst_code));
+    bytecode.write(reinterpret_cast<const char*>(&inst_code), 
+        sizeof(inst_code));
 }
 
 
@@ -292,24 +293,18 @@ void sltiu(std::ifstream& asm_file, std::ofstream& bytecode) {
 }
 }
 
-namespace Labels {
+// namespace Risc_v {
 
-    // массив структур (хеш таблица), где хранятся названия меток и адреса, на которые они указывают
+// class Asm {
 
-}
-
-namespace Risc_v {
-
-class Asm {
-
-private:
+// private:
 
 
-public:
+// public:
 
-};
+// };
 
 
-}
+// }
 
 #endif 

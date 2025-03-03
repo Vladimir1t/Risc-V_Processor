@@ -3,8 +3,8 @@
 
 #include "risc_asm.hpp"
 #include "risc_proc.hpp"
-//#include "instr_regs.hpp"
 
+/* RVI32 Sumilator (Assembly) */
 int main(int argc, const char* argv[]) {
 
     if (argc < 3)
